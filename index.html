@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <title>Lab 2</title>
-    <link rel="stylesheet" href="/styles.css">
-  </head>
-  <body>
-    
-    <h1>Lab 2</h1>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
-    <script text="type/javascript" src="/script.js">
-    </script>
+	<link rel="stylesheet" href="index.css">
+</head>
+<body>
+	<h1>Where are you from?</h1>
+	<label for="city">Select a city: </label><div class="autfill-box"><input type="text" name="city" id="city" class="autofill-input"><div id="citiesList" class="autofill-list"></div></div><button onclick="getWeatherFor(document.getElementById('city').value)">Get Weather</button>
+	<div id="weather"></div>
+</body>
 
-  </body>
+<script src="index.js"></script>
+
 </html>

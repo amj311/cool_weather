@@ -1,0 +1,51 @@
+
+* {
+    box-sizing: border-box;
+}
+.autfill-box {
+    display: inline-block;
+    position: relative;
+}
+.autofill-input {
+    top:0;
+    left:0;
+    width:100%;
+    height: 100%;
+}
+
+
+.autofill-list ul {
+    position: absolute;
+    border: 1px solid;
+    border-top: none;
+    margin-top: -1px;
+    color: #666;
+    top: 100%;
+    width:100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 8em;
+    overflow-y: auto;
+    z-index: 5;
+    user-select: none;
+    Background:#fff;
+}
+.autofill-list ul li.clickable {
+    margin: 0;
+    padding: .2em;
+    cursor: pointer;
+}
+.autofill-list ul li.clickable:hover {
+    background-color: #00000011;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+}
