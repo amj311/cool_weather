@@ -72,7 +72,10 @@ function updateCurrent(weather){
 
     let condDesc = app.data.weather[0].description;
 
-    if (app.rain_cond.indexOf(condDesc) >= 0) document.body.setAttribute('data-weather-cycle',"rain")
+    if (app.rain_cond.indexOf(condDesc) >= 0) {
+        document.body.setAttribute('data-weather-cycle',"rain")
+        document.querySelector('head > meta[name="theme-color"]').content = THEMES.rain;
+    }
     else  document.body.removeAttribute('data-weather-cycle')
 
     document.body.setAttribute('data-day-cycle',app.dayCycle)
