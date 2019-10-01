@@ -29,7 +29,7 @@ var app = {
         "overcast clouds" : "☁",
         "light rain" : "🌧",
         "light intensity shower rain" : "🌧",
-        "shower rain" : "🌦",
+        "shower rain" : "🌧",
         "moderate rain" : "🌧",
         "heavy intensity rain" : "⛈",
         "thunderstorm" : "⛈",
@@ -214,7 +214,7 @@ function renderPreviewCity(data){
                         <td class="city">${data.name}, ${data.sys.country}</td>
                         <td class="cur-for-time">${dateToHourMin(forTime)}</td>
                         <td class="temp-pair">${convertTemp(data.main.temp)}</td>
-                        <td class="humid-num">${data.main.humidity}</td>
+                        <td class="humid-num">💧 ${data.main.humidity}</td>
                     </tr>`;
 
     previewList.innerHTML += cityHTML;

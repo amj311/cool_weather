@@ -277,6 +277,10 @@ table#previews_container {
     font-weight: bold;
     padding-left: .5em;
 }
+.city_preview td.cur-for-time {
+    text-align: right;
+    padding-right: 15%;
+}
 .city_preview .humid-num, .city_preview .temp-pair {
     text-align: right;
 }
