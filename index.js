@@ -1,6 +1,7 @@
 const UNIT_C = 'cels';
 const UNIT_F = 'fahr';
 const DAYS = ["sun","mon","tue","wed","thu","fri","sat"]
+const THEMES = { day : "#3e96ee", night : "#1b4368", rain : "#112d48" };
 
 var app = {
     data : {},
@@ -66,6 +67,9 @@ function updateCurrent(weather){
 
     if (forTime > forSunrise && forTime < forSunset) app.dayCycle = "day";
     else  app.dayCycle = "night";
+
+    document.querySelector('head > meta[name="theme-color"]').content = THEMES[app.dayCycle];
+
     let condDesc = app.data.weather[0].description;
 
     if (app.rain_cond.indexOf(condDesc) >= 0) document.body.setAttribute('data-weather-cycle',"rain")
