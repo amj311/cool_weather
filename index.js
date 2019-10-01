@@ -1,7 +1,7 @@
 const UNIT_C = 'cels';
 const UNIT_F = 'fahr';
 const DAYS = ["sun","mon","tue","wed","thu","fri","sat"]
-const THEMES = { day : "#3e96ee", night : "#1b4368", rain : "#112d48" };
+const THEMES = { day : "#3e96ee", night : "#1b4368", rain : "#4b6177" };
 
 var app = {
     data : {},
