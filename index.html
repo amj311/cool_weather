@@ -6,12 +6,114 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Document</title>
 
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+
 	<link rel="stylesheet" href="index.css">
 </head>
-<body>
-	<h1>Where are you from?</h1>
-	<label for="city">Select a city: </label><div class="autfill-box"><input type="text" name="city" id="city" class="autofill-input"><div id="citiesList" class="autofill-list"></div></div><button onclick="getWeatherFor(document.getElementById('city').value)">Get Weather</button>
-	<div id="weather"></div>
+
+<body data-day-cycle="day" data-unit="fahr" data-weather-cycle="rain">
+<div id="inner_body">
+	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+		<a class="navbar-brand" href="#">😎 Cool Weather</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto">
+				<div class="form-inline my-2 my-lg-0">
+					<input class="form-control mr-sm-2" type="search" name="city" id="city" placeholder="City Name" aria-label="City">
+					<button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="getWeatherFor(document.getElementById('city').value)">Get Weather</button>
+				</div>
+			</ul>
+		</div>
+	</nav>
+		
+	<div class="max-width min-page-height padded-sides padded-topbottom">
+
+		<div id="weather"></div>
+
+		<div id="dash" class="flex-container">
+				<p>
+					<i>Showing weather for:</i>
+					&nbsp;<b><span class="fill city-name">Pocatello</span></b>
+					&nbsp;Lat: <span class="fill latitude">∅</span>
+					&nbsp;Lon: <span class="fill longitude">∅</span>
+				</p>
+
+				<div id="current_weather" class="widget">
+					
+					<div class="summary flex-container">
+					<div class="flex-container" id="cur_conditions">
+						<div class="icon">☀</div>
+						<div style="margin-left: .6em;">
+							<div class="description">Sunny</div>
+							<div class="time-humid"><span class="cur-for-time">12:00 AM</span>&nbsp;&nbsp;|&nbsp;&nbsp;💧 <span class="humid-num">70</span></div>
+						</div>
+					</div>
+		
+					<div id="cur_temp" class="flex-container temp-pair">55</div>
+				</div>
+
+				<div id="details_toggle" class="collapsed" data-toggle="collapse" data-target="#current_details" aria-expanded="false" aria-controls="collapseExample" style="margin: 0 auto;">					</div>
+
+				<div class="collapse" id="current_details">
+					<div id="details_table" class="flex-container">
+						<div>
+							<span>Low/High</span>
+							<span><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></span>
+						</div>
+						<div><span>Humidity</span><span class="humid-num">10</span></div>
+						<div><span>Atm. Pressure</span><span class="press-num">1234</span></div>
+						<div><span>Wind</span><span class="wind-num">1234</span><span class="wind-arr"><span class="wind-deg"></span></span></div>
+						<div><span>Sunrise</span><span class="sunrise-num">1234</span></div>
+						<div><span>Sunset</span><span class="sunset-num">1234</span></div>
+					</div>
+				</div>
+
+			</div>
+	
+			<div id="forecast" class="widget">
+				<h4>Forecast</h4>
+				<div id="hours_container">
+					<div class="forecast-hour">
+						<div><span class="day">Mon</span><span class="Hour">7 AM</span></div>
+						<div class="icon">☀</div>
+						<div><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
+						<div class="rain">💧 .5 cm</div>
+					</div>
+					<div class="forecast-hour">
+						<div><span class="day">Mon</span><span class="Hour">7 AM</span></div>
+						<div class="icon">☀</div>
+						<div><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
+						<div class="rain">💧 .5 cm</div>
+					</div>
+					<div class="forecast-hour">
+						<div><span class="day">Mon</span><span class="Hour">7 AM</span></div>
+						<div class="icon">☀</div>
+						<div><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
+						<div class="rain">💧 .5 cm</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="previews" class="widget">
+				<h4>Worldwide</h4>
+				<table id="previews_container"><tbody>
+					
+				</tbody></table>
+			</div>
+	
+		</div>
+	</div>
+
+	<footer>See the repo on <a href="https://github.com/BYUCS260/lab2-javascript-amj311">Github</a></footer>
+</div>
 </body>
 
 <script src="index.js"></script>
