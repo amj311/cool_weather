@@ -37,7 +37,14 @@ var app = {
         "fog" : "🌫"
     },
     rain_cond : ["moderate rain","heavy rain","thunderstorm","heavy intensity rain"],
-    pre_cities : ["los angeles","Denver","New York","London","Moscow","Hong Kong"]
+    pre_cities : ["los angeles","Denver","New York","London","Moscow","Hong Kong"],
+    changeUnits : function(unit){
+        if (unit != UNIT_C && unit != UNIT_F) return false;
+        this.unit = unit;
+        document.body.setAttribute('data-unit',unit)
+        updateCurrent(app.data)
+    }
+    
 }
 
 function getWeatherFor(city){
@@ -142,11 +149,11 @@ function renderForecast(data){
 
 function forecastHourHTMl(hour){
                 
-    let forTime = dateFromSec(hour.dt);
+    let forTime = getForeignTimeAt( dateFromSec(hour.dt), app.data.timezone );
     console.log(dateFromSec(hour.dt))
     let dayTimeHTML = `<span class="day">${DAYS[forTime.getDay()]}</span><span class="hour">${dateToHour(forTime)}</span>`;
-    let forSunrise = dateFromSec(hour.sys.sunrise);
-    let forSunset = dateFromSec(hour.sys.sunset);
+    let forSunrise = getForeignTimeAt( dateFromSec(app.data.sys.sunrise), app.data.timezone );
+    let forSunset = getForeignTimeAt( dateFromSec(app.data.sys.sunset), app.data.timezone );
     let dayCycle;
 
     if (forTime.getHours() > forSunrise.getHours() && forTime.getHours() < forSunset.getHours()) dayCycle = "day";
@@ -160,7 +167,7 @@ function forecastHourHTMl(hour){
     let iconDivHTML = `<div class="icon">${icons.HTML}</div>`
  
     let highTemp = convertTemp(hour.main.temp_max)
-    let tempsHTML = `<span class="temp-pair temp-high">${highTemp}</span>`
+    let tempsHTML = `<span class="temp-pair temp-high" onclick="toggleUnits()" title="Change Units">${highTemp}</span>`
 
     return  `<div class="forecast-hour">
                 <div>${dayTimeHTML}</div>
@@ -259,13 +266,6 @@ function convertTemp(k) {
     else return Math.floor(k - 273.15)
 }
 
-function changeUnits(unit){
-    if (unit != UNIT_C && unit != UNIT_F) return false;
-    app.unit = unit;
-    document.body.setAttribute('data-unit',unit)
-    updateCurrent(app.data)
-}
-
 
 
 
@@ -312,5 +312,16 @@ function dateToHour(date){
     return `${hrs} ${hr12}` 
 }
 
+
+
+$('input[name="units"]').on('change', function() {
+    if($('input[name="units"]:checked').length) app.changeUnits(UNIT_F);
+    else app.changeUnits(UNIT_C);toggleUnits()
+})
+
+
+function toggleUnits(){
+    $('input[name="units"]').click()
+}
 
 getWeatherFor('Provo')

@@ -3,7 +3,7 @@
     --day-blue-op: #3e96ee26;
     --day-highlight: #65b0fa;
     --night-blue: #1b4368;
-    --night-blue-op: #1b436886;
+    --night-blue-op: #1b436821;
     --night-highlight: #1b4368;
     --rain-blue: #4b6177;
     --rain-blue-op: #4b617786;
@@ -35,7 +35,7 @@ body[data-day-cycle="night"] {
     background-image: linear-gradient(-35deg, var(--night-blue-op), 50%, var(--night-highlight)), url(./images/night_sky.jpg);
 }
 body[data-day-cycle="night"] .navbar {
-    background-color: var(--night-blue-op) !important;
+    background-color: var(--night-blue) !important;
 }
 
 body[data-weather-cycle="rain"] {
@@ -45,13 +45,10 @@ body[data-weather-cycle="rain"] .navbar {
     background-color: var(--rain-blue-op) !important;
 }
 
-div#inner_body {
-    height: 100vh;
-    overflow-y: auto;
-}
 
-.min-page-height {
-    min-height:calc(100vh - 110px);
+div#inner_body {
+    max-height: calc(100vh - 7.8em);
+    overflow-y: auto;
 }
 
 .max-width {
@@ -75,6 +72,9 @@ div#inner_body {
 }
 
 footer {
+    position: fixed;
+    bottom: 0;
+    width:100%;
     background-color: #00000022;
     text-align: center;
     padding: 15px;
@@ -84,9 +84,19 @@ footer {
 
 /* UNIT ELEMENTS */
 
+body[data-unit="fahr"] label[for="units"]::after {
+    content: '℉'
+}
+body[data-unit="cels"] label[for="units"]::after {
+    content: '℃'
+}
+
+
 .temp-pair {
     display: inline-flex;
     align-items: start;
+    cursor: pointer;
+    user-select: none;
 }
 .temp-pair::after {
     font-size: .5em;
@@ -171,7 +181,7 @@ div#current_weather {
 }
 .icon-secondary {
     position: absolute;
-    top: 0.4em;
+    margin-top: -1.5em;
     right: 0;
     font-size: 0.8em;
 }

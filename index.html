@@ -16,7 +16,6 @@
 </head>
 
 <body data-day-cycle="day" data-unit="fahr" data-weather-cycle="rain">
-<div id="inner_body">
 	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
 		<a class="navbar-brand" href="#">😎 Cool Weather</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -26,10 +25,9 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav ml-auto">
-				<div class="flex-container">
-					<label for="units">℃</label>
-					<input class="form-control mr-sm-2" type="checkbox" name="units" id="units" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
-					<label for="units">℉</label>
+				<div class="form-inline my-2 my-lg-0">
+						<input hidden checked class="form-control mr-sm-2" type="checkbox" name="units" id="units" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
+						<label for="units" class="btn btn-primary">Units: </label>
 				</div>
 				<div class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" name="city" id="city" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
@@ -39,7 +37,10 @@
 		</div>
 	</nav>
 
-	<div class="max-width min-page-height padded-sides padded-topbottom">
+
+
+<div id="inner_body">
+	<div class="max-width padded-sides padded-topbottom">
 
 		<div id="weather"></div>
 
@@ -62,7 +63,7 @@
 						</div>
 					</div>
 		
-					<div id="cur_temp" class="flex-container temp-pair">55</div>
+					<div id="cur_temp" class="flex-container temp-pair" onclick="toggleUnits()" title="Change Units" onclick="toggleUnits()" title="Change Units">55</div>
 				</div>
 
 				<div id="details_toggle" class="collapsed" data-toggle="collapse" data-target="#current_details" aria-expanded="false" aria-controls="collapseExample" style="margin: 0 auto;">					</div>
@@ -116,9 +117,8 @@
 	
 		</div>
 	</div>
-
-	<footer>See the repo on <a href="https://github.com/BYUCS260/lab2-javascript-amj311">Github</a></footer>
 </div>
+	<footer>See the repo on <a href="https://github.com/BYUCS260/lab2-javascript-amj311">Github</a></footer>
 </body>
 
 <script src="index.js"></script>
