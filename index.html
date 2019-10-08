@@ -87,23 +87,10 @@
 			<div id="forecast" class="widget">
 				<h4>Forecast</h4>
 				<div id="hours_container">
-					<div class="forecast-hour">
-						<div><span class="day">Mon</span><span class="Hour">7 AM</span></div>
-						<div class="icon">☀</div>
-						<div><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
-						<div class="rain">💧 .5 cm</div>
-					</div>
-					<div class="forecast-hour">
-						<div><span class="day">Mon</span><span class="Hour">7 AM</span></div>
-						<div class="icon">☀</div>
-						<div><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
-						<div class="rain">💧 .5 cm</div>
-					</div>
-					<div class="forecast-hour">
-						<div><span class="day">Mon</span><span class="Hour">7 AM</span></div>
-						<div class="icon">☀</div>
-						<div><span class="temp-pair temp-low">40</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
-						<div class="rain">💧 .5 cm</div>
+					<div v-for="hour in hourlyInfo" class="forecast-hour">
+						<div><span class="day">{{hour.day}}</span><span class="Hour">{{hour.time}}</span></div>
+						<div class="icon">{{hour.iconHTML}}</div>
+						<div><span class="temp-pair temp-low">{{hour.highTemp}}</span>&nbsp;/&nbsp;<span class="temp-pair temp-high">55</span></div>
 					</div>
 				</div>
 			</div>
@@ -118,9 +105,14 @@
 		</div>
 	</div>
 </div>
-	<footer>See the repo on <a href="https://github.com/BYUCS260/lab2-javascript-amj311">Github</a></footer>
+
+<footer>See the repo on <a href="https://github.com/BYUCS260/lab2-javascript-amj311">Github</a></footer>
+
+
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.js"></script>
+	<script src="index.js"></script>
 </body>
 
-<script src="index.js"></script>
 
 </html>

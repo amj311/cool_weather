@@ -149,7 +149,7 @@ body[data-unit="fahr"] .temp-pair::after {
 .widget-header h5 {
     float: left;
 }
-.widget-header .btn-sm {
+.widget-header .btn {
     float: right;
 }
 .widget-body {
