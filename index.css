@@ -113,8 +113,12 @@ body[data-unit="fahr"] .temp-pair::after {
     content: '%';
 }
 
-.wind-num::after {
+body[data-unit="fahr"] .wind-num::after {
     content: 'mph';
+    font-size: .8em;
+}
+body[data-unit="cels"] .wind-num::after {
+    content: 'm/s';
     font-size: .8em;
 }
 .wind-arr {

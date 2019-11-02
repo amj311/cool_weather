@@ -1,11 +1,9 @@
-const UNIT_C = 'cels';
-const UNIT_F = 'fahr';
-const DAYS = ["sun","mon","tue","wed","thu","fri","sat"]
+
 const THEMES = { day : "#3e96ee", night : "#1b4368", rain : "#4b6177" };
 
-var app = {
+var appData = {
     data : {},
-    unit : UNIT_F,
+    unit : 'fahr',
     cond : "rain",
     icons : {
         "clear sky" : "☀",
@@ -37,145 +35,121 @@ var app = {
         "fog" : "🌫"
     },
     rain_cond : ["moderate rain","heavy rain","thunderstorm","heavy intensity rain"],
-    pre_cities : ["los angeles","Denver","New York","London","Moscow","Hong Kong"],
     changeUnits : function(unit){
-        if (unit != UNIT_C && unit != UNIT_F) return false;
-        this.unit = unit;
+        if (unit != app.UNIT_C && unit != app.UNIT_F) return false;
+        app.unit = unit;
         document.body.setAttribute('data-unit',unit)
-        updateCurrent(app.data)
     }
     
 }
 
-function getWeatherFor(city){
-    document.getElementById('weather').innerHTML = `Loading...`
-
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
-    .then( function(response) {
-	    return response.json();
-    })
-    .then(function(weather) {
-        console.log(weather);
-        if(weather.cod === 200){
-            current.updateCurrent(weather);
-            forecast.getForecastFor(city);
-            document.getElementById('weather').innerHTML = `Condition: ${convertTemp(weather.main.temp)}`
-        }
-            else document.getElementById('weather').innerHTML = `No data.`
-    })
-}
-
-
-
-var current = new Vue ({
-    el: "#current_weather",
+var app = new Vue ({
+    el: "#inner_body",
 
     data: {
+        unit: 'fahr',
         isDay: false,
-        icon: {},
-        descr: '',
-        time: '',
-        humidity: '',
-        tempK: 0
+        currentData: {},
+        forecastHours: [],
+        message: "hello",
+        UNIT_C: 'cels',
+        UNIT_F: 'fahr',
+        DAYS: ["sun","mon","tue","wed","thu","fri","sat"],
+        pre_cities: ["los angeles","Denver","New York","London","Moscow","Hong Kong"],
+        pre_data: [],
     },
 
     methods: {
+        
+        toggleUnits(){
+            $('input[name="units"]').click()
+        },
+
+        getWeatherFor(city){
+            document.getElementById('weather').innerHTML = `Loading...`
+        
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
+            .then( function(response) {
+                return response.json();
+            })
+            .then(function(weather) {
+                console.log(weather);
+                if(weather.cod === 200){
+                    app.updateCurrent(weather);
+                    app.getForecastFor(city);
+                    document.getElementById('weather').innerHTML = `Condition: ${tempCFPair(weather.main.temp)}`
+                }
+                    else document.getElementById('weather').innerHTML = `No data.`
+            })
+        },        
+
         updateCurrent(weather) {
-            app.data = weather;
         
-            let forTime = getForeignTimeAt( new Date(), app.data.timezone );
-            let forSunrise = getForeignTimeAt( dateFromSec(app.data.sys.sunrise), app.data.timezone );
-            let forSunset = getForeignTimeAt( dateFromSec(app.data.sys.sunset), app.data.timezone );
+            let forTime = getForeignTimeAt( new Date(), weather.timezone );
+            let forSunrise = getForeignTimeAt( dateFromSec(weather.sys.sunrise), weather.timezone );
+            let forSunset = getForeignTimeAt( dateFromSec(weather.sys.sunset), weather.timezone );
         
-            if (forTime > forSunrise && forTime < forSunset) app.dayCycle = "day";
-            else  app.dayCycle = "night";
+            if (forTime > forSunrise && forTime < forSunset) appData.dayCycle = "day";
+            else  appData.dayCycle = "night";
         
-            document.querySelector('head > meta[name="theme-color"]').content = THEMES[app.dayCycle];
+            document.querySelector('head > meta[name="theme-color"]').content = THEMES[appData.dayCycle];
         
-            let condDesc = app.data.weather[0].description;
+            let condDesc = weather.weather[0].description;
         
-            if (app.rain_cond.indexOf(condDesc) >= 0) {
+            if (appData.rain_cond.indexOf(condDesc) >= 0) {
                 document.body.setAttribute('data-weather-cycle',"rain")
                 document.querySelector('head > meta[name="theme-color"]').content = THEMES.rain;
             }
             else  document.body.removeAttribute('data-weather-cycle')
         
-            document.body.setAttribute('data-day-cycle',app.dayCycle)
+            document.body.setAttribute('data-day-cycle',appData.dayCycle)
         
-            $('#cur_conditions .description')[0].innerText = condDesc;
+            weather.icons = getIconsFor(condDesc, appData.dayCycle);
+        
+            document.title = `${weather.icons.main} ${tempCFPair(weather.main.temp)}° - ${condDesc}`;
+        
+            weather.time = dateToHourMin( forTime )
+            weather.sunrise = dateToHourMin( forSunrise )
+            weather.sunset = dateToHourMin( forSunset )
+        
+            weather.temp = tempCFPair(weather.main.temp)
+            weather.lowTemp = tempCFPair(weather.main.temp_min)
+            weather.highTemp = tempCFPair(weather.main.temp_max)
             
-        
-            let icons = getIconsFor(condDesc, app.dayCycle);
-            $('#cur_conditions .icon')[0].innerHTML = icons.HTML;
-        
-            document.title = `${icons.main} ${convertTemp(app.data.main.temp)}° - ${condDesc}`;
-        
-        
-        
-            $('.cur-for-time')[0].innerHTML = dateToHourMin( forTime )
-            $('.sunrise-num')[0].innerText = dateToHourMin( forSunrise )
-            $('.sunset-num')[0].innerText = dateToHourMin( forSunset )
-        
-            $('#cur_temp')[0].innerText = convertTemp(app.data.main.temp)
-            $('.temp-low')[0].innerText = convertTemp(app.data.main.temp_min)
-            $('.temp-high')[0].innerText = convertTemp(app.data.main.temp_max)
+            weather.wind.mph = windToMPH(weather.wind.speed)
+            weather.wind.degStyle = `transform: rotate(${ weather.wind.deg }deg)`
             
-            $('.city-name')[0].innerHTML = `${app.data.name}, ${app.data.sys.country}`
-            $('.latitude')[0].innerHTML = `${app.data.coord.lat}`
-            $('.longitude')[0].innerHTML = `${app.data.coord.lon}`
-        
-            $('.humid-num')[0].innerText = app.data.main.humidity
-            $('.humid-num')[1].innerText = app.data.main.humidity
-        
-            $('.press-num')[0].innerText = app.data.main.pressure
-        
-            $('.wind-num')[0].innerText = app.data.wind.speed
-            $('.wind-deg').css('transform',`rotate(${ app.data.wind.deg }deg)`)
-        
+            appData.data = weather;
+            this.currentData = weather;
+
             renderPreviews();
-        }
-    }
-})
+        },
 
 
-
-
-
-
-
-
-
-var forecast = new Vue({
-    el: '#forecast',
-
-    data: {
-        hours: [],
-        message: "hello"
-    },
-
-    methods: {
         getForecastFor(city){
             fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
             .then( function(response) {
                 return response.json();
             })
             .then(function(prog) {
-                forecast.hours = prog.list;
+                app.forecastHours = prog.list;
             })
-        }
+        },
+
     },
 
     computed: {
+
         hourlyInfo() {
-            return this.hours.map( function(hour){
+            return this.forecastHours.map( function(hour){
                 let obj = {}
 
-                let forTime = getForeignTimeAt( dateFromSec(hour.dt), app.data.timezone );
-                let forSunrise = getForeignTimeAt( dateFromSec(app.data.sys.sunrise), app.data.timezone );
-                let forSunset = getForeignTimeAt( dateFromSec(app.data.sys.sunset), app.data.timezone );
+                let forTime = getForeignTimeAt( dateFromSec(hour.dt), appData.data.timezone );
+                let forSunrise = getForeignTimeAt( dateFromSec(appData.data.sys.sunrise), appData.data.timezone );
+                let forSunset = getForeignTimeAt( dateFromSec(appData.data.sys.sunset), appData.data.timezone );
                 
                 obj.isDay = forTime.getHours() > forSunrise.getHours() && forTime.getHours() < forSunset.getHours();
-                obj.day = DAYS[forTime.getDay()];
+                obj.day = app.DAYS[forTime.getDay()];
                 obj.time = dateToHour(forTime);
                 
                 let descr = hour.weather[0].description;
@@ -185,7 +159,9 @@ var forecast = new Vue({
                 else  dayCycle = "night";
                 obj.iconHTML = getIconsFor(descr, dayCycle).HTML;
             
-                obj.highTemp = convertTemp(hour.main.temp_max);
+                obj.highTemp = tempCFPair(hour.main.temp_max);
+                obj.lowTemp = tempCFPair(hour.main.temp_min);
+
                 obj.summary = hour.weather[0].main;
 
                 return obj;
@@ -196,59 +172,9 @@ var forecast = new Vue({
 
 
 
-
-function getForecastFor(city){
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
-    .then( function(response) {
-        return response.json();
-    })
-    .then(function(prog) {
-        renderForecast(prog);
-    })
-}
-
-function renderForecast(data){
-    const forecastList = document.getElementById('hours_container')
-    let listHTML = "";
-    for ( hour in data.list ) listHTML += forecastHourHTMl(data.list[hour]);
-
-    forecastList.innerHTML = listHTML;
-}
-
-function forecastHourHTMl(hour){
-                
-    let forTime = getForeignTimeAt( dateFromSec(hour.dt), app.data.timezone );
-    let dayTimeHTML = `<span class="day">${DAYS[forTime.getDay()]}</span><span class="hour">${dateToHour(forTime)}</span>`;
-    let forSunrise = getForeignTimeAt( dateFromSec(app.data.sys.sunrise), app.data.timezone );
-    let forSunset = getForeignTimeAt( dateFromSec(app.data.sys.sunset), app.data.timezone );
-    let dayCycle;
-
-    if (forTime.getHours() > forSunrise.getHours() && forTime.getHours() < forSunset.getHours()) dayCycle = "day";
-    else  dayCycle = "night";
-
-    let descr = hour.weather[0].description;
-
-    let icons = getIconsFor(descr, dayCycle);
-
-    let iconDivHTML = `<div class="icon">${icons.HTML}</div>`
- 
-    let highTemp = convertTemp(hour.main.temp_max)
-    let tempsHTML = `<span class="temp-pair temp-high" onclick="toggleUnits()" title="Change Units">${highTemp}</span>`
-
-    return  `<div class="forecast-hour">
-                <div>${dayTimeHTML}</div>
-                ${iconDivHTML}
-                <div>${tempsHTML}&nbsp;&nbsp;|&nbsp;&nbsp;<span class="description">${hour.weather[0].main}</span></div>
-            </div>`
-}
-
-
-
-
-
 function renderPreviews(){
     $('#previews_container tbody')[0].innerHTML = "";
-    for ( city in app.pre_cities ) getPreviewFor(app.pre_cities[city]);
+    app.pre_cities.forEach( city => getPreviewFor(city) );
 }
 
 function getPreviewFor(city){
@@ -258,35 +184,25 @@ function getPreviewFor(city){
     })
     .then(function(weather) {
         console.log(weather)
-        renderPreviewCity(weather);
+        calculatePreviewData(weather);
     })
 }
 
-function renderPreviewCity(data){
-    const previewList = $('#previews_container tbody')[0];
-                
-    let forTime = getForeignTimeAt( new Date(), data.timezone);
-    let forSunrise = getForeignTimeAt( dateFromSec(data.sys.sunrise), data.timezone );
-    let forSunset = getForeignTimeAt( dateFromSec(data.sys.sunset), data.timezone );
+function calculatePreviewData(city){
+    forTime = getForeignTimeAt( new Date(), city.timezone);
+    let forSunrise = getForeignTimeAt( dateFromSec(city.sys.sunrise), city.timezone );
+    let forSunset = getForeignTimeAt( dateFromSec(city.sys.sunset), city.timezone );
     let dayCycle;
 
     if (forTime.getHours() > forSunrise.getHours() && forTime.getHours() < forSunset.getHours()) dayCycle = "day";
     else  dayCycle = "night";
 
-    let descr = data.weather[0].description;
+    let descr = city.weather[0].description;
 
-    let icons = getIconsFor(descr, dayCycle);
-    
-    let cityHTML =  `<tr class="city_preview" onclick="getWeatherFor('${data.name}, ${data.sys.country}')">
-                        <td class="icon">${icons.HTML}</td>
-                        <td class="city">${data.name}, ${data.sys.country}</td>
-                        <td class="cur-for-time">${dateToHourMin(forTime)}</td>
-                        <td class="temp-pair">${convertTemp(data.main.temp)}</td>
-                        <td class="humid-num">💧 ${data.main.humidity}</td>
-                    </tr>`;
-
-    previewList.innerHTML += cityHTML;
-
+    city.time = dateToHourMin(forTime)
+    city.icons = getIconsFor(descr, dayCycle);
+    city.temp = tempCFPair(city.main.temp)    
+    app.pre_data.push(city)
 }
 
 
@@ -300,8 +216,8 @@ function getIconsFor(cond, dayCycle){
 
     if ( dayCycle == "night" ){
 
-        if (app.night_icons.hasOwnProperty(cond)) {
-            condIcon = app.night_icons[cond];
+        if (appData.night_icons.hasOwnProperty(cond)) {
+            condIcon = appData.night_icons[cond];
             iconHTML += `🌙<div class="icon-secondary">${condIcon}</div>`;
         }
         else {
@@ -310,8 +226,8 @@ function getIconsFor(cond, dayCycle){
         }
     }
     else {
-        condIcon = app.icons.hasOwnProperty(cond) ?
-            app.icons[cond] : '☀';
+        condIcon = appData.icons.hasOwnProperty(cond) ?
+            appData.icons[cond] : '☀';
         iconHTML = condIcon;
     }
 
@@ -322,12 +238,16 @@ function getIconsFor(cond, dayCycle){
 
 
 
-function convertTemp(k) {
-    if ( app.unit === UNIT_F ) return Math.floor((k - 273.15) * 1.8 + 32);
-    else return Math.floor(k - 273.15)
+function tempCFPair(k) {
+    let obj = {};
+    obj.c = Math.floor(k - 273.15);
+    obj.f = Math.floor(obj.c * 1.8 + 32);
+    return obj;
 }
 
-
+function windToMPH(s) {
+    return (s * 2.237).toFixed(2)
+}
 
 
 
@@ -376,13 +296,9 @@ function dateToHour(date){
 
 
 $('input[name="units"]').on('change', function() {
-    if($('input[name="units"]:checked').length) app.changeUnits(UNIT_F);
-    else app.changeUnits(UNIT_C);toggleUnits()
+    if($('input[name="units"]:checked').length) appData.changeUnits(app.UNIT_F);
+    else appData.changeUnits(app.UNIT_C);
 })
 
 
-function toggleUnits(){
-    $('input[name="units"]').click()
-}
-
-getWeatherFor('Provo')
+app.getWeatherFor('Provo')
