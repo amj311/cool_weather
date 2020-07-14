@@ -43,14 +43,11 @@
 <div id="inner_body">
 	<div class="max-width padded-sides padded-topbottom">
 
-		<div id="weather"></div>
-
 		<div id="dash" class="flex-container">
 				<p>
 					<i>Showing weather for:</i>
-					&nbsp;<b><span class="fill city-name">Pocatello</span></b>
-					&nbsp;Lat: <span class="fill latitude">∅</span>
-					&nbsp;Lon: <span class="fill longitude">∅</span>
+					&nbsp;<b><span class="fill city-name" v-if="currentData.sys">{{currentData.name}}, {{currentData.sys.country}}</span></b>
+					<!-- &nbsp;(<span class="fill" v-if="currentData.coord">{{currentData.coord.lat}}, {{currentData.coord.lon}})</span> -->
 				</p>
 
 				<div v-if="currentData.time" id="current_weather" class="widget">
@@ -139,7 +136,12 @@
 					</tr>
 				</tbody></table>
 			</div>
-	
+	<p></p>
+	<p></p>
+	<p></p>
+	<p></p>
+	<p></p>
+	<p></p>
 		</div>
 	</div>
 </div>

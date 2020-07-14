@@ -34,12 +34,14 @@ var appData = {
         "mist" : "🌫",
         "fog" : "🌫"
     },
-    rain_cond : ["moderate rain","heavy rain","thunderstorm","heavy intensity rain"],
+    
+    rain_cond : ["light intensity shower rain","moderate rain","heavy rain","thunderstorm","heavy intensity rain"],
+    
     changeUnits : function(unit){
         if (unit != app.UNIT_C && unit != app.UNIT_F) return false;
         app.unit = unit;
         document.body.setAttribute('data-unit',unit)
-    }
+    },
     
 }
 
@@ -55,18 +57,20 @@ var app = new Vue ({
         UNIT_C: 'cels',
         UNIT_F: 'fahr',
         DAYS: ["sun","mon","tue","wed","thu","fri","sat"],
-        pre_cities: ["los angeles","Denver","New York","London","Moscow","Hong Kong"],
+        pre_cities: ["Moscow","los angeles","Denver","New York","London","Hong Kong"],
         pre_data: [],
     },
 
     methods: {
-        
+        formatKTemp(ktemp) {
+            return this.unit == this.UNIT_C ? Math.floor(k - 273.15) : Math.floor(obj.c * 1.8 + 32);
+        },
+
         toggleUnits(){
             $('input[name="units"]').click()
         },
 
         getWeatherFor(city){
-            document.getElementById('weather').innerHTML = `Loading...`
         
             fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
             .then( function(response) {
@@ -77,9 +81,7 @@ var app = new Vue ({
                 if(weather.cod === 200){
                     app.updateCurrent(weather);
                     app.getForecastFor(city);
-                    document.getElementById('weather').innerHTML = `Condition: ${tempCFPair(weather.main.temp)}`
                 }
-                    else document.getElementById('weather').innerHTML = `No data.`
             })
         },        
 
@@ -139,6 +141,9 @@ var app = new Vue ({
     },
 
     computed: {
+        async citiesData() {
+            return this.pre_cities;
+        },
 
         hourlyInfo() {
             return this.forecastHours.map( function(hour){
