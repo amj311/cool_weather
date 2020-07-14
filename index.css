@@ -45,10 +45,16 @@ body[data-weather-cycle="rain"] .navbar {
     background-color: var(--rain-blue-op) !important;
 }
 
+div#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
 
 div#inner_body {
     max-height: calc(100vh - 7.8em);
     overflow-y: auto;
+    flex-grow: 1;
 }
 
 .max-width {
@@ -72,8 +78,7 @@ div#inner_body {
 }
 
 footer {
-    position: fixed;
-    bottom: 0;
+    flex-grow: 1;
     width:100%;
     background-color: #00000022;
     text-align: center;

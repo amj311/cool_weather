@@ -46,9 +46,10 @@ var appData = {
 }
 
 var app = new Vue ({
-    el: "#inner_body",
+    el: "#app",
 
     data: {
+        openWeatherID: "48cd58f888a06eff3e989435bea46736",
         unit: 'fahr',
         isDay: false,
         currentData: {},
@@ -61,7 +62,48 @@ var app = new Vue ({
         pre_data: [],
     },
 
+    created() {
+        this.getWeatherFor('New York')
+    },
+
+    mounted() {
+        this.getLocalWeather();
+    },
+
     methods: {
+        getLocalWeather() {
+            console.log("called function")
+            if (navigator) {
+                this.loading = true;
+                navigator.geolocation.getCurrentPosition(
+                    res => {
+                        console.log(res)
+                        let lat = res.coords.latitude;
+                        let lon = res.coords.longitude;
+                        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.openWeatherID}`)
+                        .then( function(response) {
+                            return response.json();
+                        })
+                        .then(function(weather) {
+                            console.log(weather);
+                            if(weather.cod === 200){
+                                app.updateCurrent(weather);
+                            }
+                        })
+
+                        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${this.openWeatherID}`)
+                        .then( function(response) {
+                            return response.json();
+                        })
+                        .then(function(prog) {
+                            app.forecastHours = prog.list;
+                        })
+                    },
+                    err => console.log(err)
+                );
+            }
+        },
+
         formatKTemp(ktemp) {
             return this.unit == this.UNIT_C ? Math.floor(k - 273.15) : Math.floor(obj.c * 1.8 + 32);
         },
@@ -72,7 +114,7 @@ var app = new Vue ({
 
         getWeatherFor(city){
         
-            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${this.openWeatherID}`)
             .then( function(response) {
                 return response.json();
             })
@@ -129,7 +171,7 @@ var app = new Vue ({
 
 
         getForecastFor(city){
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=48cd58f888a06eff3e989435bea46736`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${this.openWeatherID}`)
             .then( function(response) {
                 return response.json();
             })
@@ -306,4 +348,3 @@ $('input[name="units"]').on('change', function() {
 })
 
 
-app.getWeatherFor('Provo')

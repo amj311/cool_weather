@@ -9,6 +9,7 @@
 	<meta name="theme-color" content="#3e96ee">
 	<link id="favicon" rel="icon" href="favicon.png" type="image/png" sizes="32x32">
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
@@ -17,137 +18,134 @@
 </head>
 
 <body data-day-cycle="day" data-unit="fahr" data-weather-cycle="rain">
-	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-		<a class="navbar-brand" href="#">😎 Cool Weather</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+	<div id="app">
+		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+			<a class="navbar-brand" href="#">😎 Cool Weather</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav ml-auto">
-				<div class="form-inline my-2 my-lg-0">
-						<input hidden checked class="form-control mr-sm-2" type="checkbox" name="units" id="units" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
-						<label for="units" class="btn btn-primary">Units: </label>
-				</div>
-				<div class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" name="city" id="city" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
-					<button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="getWeatherFor(document.getElementById('city').value)">Get Weather</button>
-				</div>
-			</ul>
-		</div>
-	</nav>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ml-auto">
+					<div class="form-inline my-2 my-lg-0">
+							<input hidden checked class="form-control mr-sm-2" type="checkbox" name="units" id="units" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
+							<label for="units" class="btn btn-primary">Units: </label>
+					</div>
+					<div class="form-inline my-2 my-lg-0">
+						<input class="form-control mr-sm-2" type="search" name="city" id="city" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
+						<button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="app.getWeatherFor(document.getElementById('city').value)">Get Weather</button>
+						<button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="app.getLocalWeather()"><i class="fa fa-map-marker"></i></button>
+					</div>
+				</ul>
+			</div>
+		</nav>
 
 
 
-<div id="inner_body">
-	<div class="max-width padded-sides padded-topbottom">
+	<div id="inner_body">
+		<div class="max-width padded-sides padded-topbottom">
 
-		<div id="dash" class="flex-container">
-				<p>
-					<i>Showing weather for:</i>
-					&nbsp;<b><span class="fill city-name" v-if="currentData.sys">{{currentData.name}}, {{currentData.sys.country}}</span></b>
-					<!-- &nbsp;(<span class="fill" v-if="currentData.coord">{{currentData.coord.lat}}, {{currentData.coord.lon}})</span> -->
-				</p>
+			<div id="dash" class="flex-container">
+					<p>
+						<i>Showing weather for:</i>
+						&nbsp;<b><span class="fill city-name" v-if="currentData.sys">{{currentData.name}}, {{currentData.sys.country}}</span></b>
+						<!-- &nbsp;(<span class="fill" v-if="currentData.coord">{{currentData.coord.lat}}, {{currentData.coord.lon}})</span> -->
+					</p>
 
-				<div v-if="currentData.time" id="current_weather" class="widget">
-					
-					<div class="summary flex-container">
-					<div class="flex-container" id="cur_conditions">
-						<div class="icon" v-html="currentData.icons.HTML"></div>
-						<div style="margin-left: .6em;">
-							<div class="description">{{currentData.weather[0].description}}</div>
-							<div class="time-humid"><span class="cur-for-time">{{currentData.time}}</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="humid-num">💧 {{currentData.main.humidity}}</span></div>
+					<div v-if="currentData.time" id="current_weather" class="widget">
+						
+						<div class="summary flex-container">
+						<div class="flex-container" id="cur_conditions">
+							<div class="icon" v-html="currentData.icons.HTML"></div>
+							<div style="margin-left: .6em;">
+								<div class="description">{{currentData.weather[0].description}}</div>
+								<div class="time-humid"><span class="cur-for-time">{{currentData.time}}</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="humid-num">💧 {{currentData.main.humidity}}</span></div>
+							</div>
+						</div>
+			
+						<div id="cur_temp" class="flex-container temp-pair" title="Change Units" onclick="app.toggleUnits()" title="Change Units">
+							<span v-show="unit == 'fahr'">{{currentData.temp.f}}</span>
+							<span v-show="unit == 'cels'">{{currentData.temp.c}}</span>
 						</div>
 					</div>
-		
-					<div id="cur_temp" class="flex-container temp-pair" title="Change Units" onclick="app.toggleUnits()" title="Change Units">
-						<span v-show="unit == 'fahr'">{{currentData.temp.f}}</span>
-						<span v-show="unit == 'cels'">{{currentData.temp.c}}</span>
+
+					<div id="details_toggle" class="collapsed" data-toggle="collapse" data-target="#current_details" aria-expanded="false" aria-controls="collapseExample" style="margin: 0 auto;">					</div>
+
+					<div class="collapse" id="current_details">
+						<div id="details_table" class="flex-container">
+							<div>
+								<span>Low/High</span>
+								<div @click="toggleUnits" title="Change Units">
+									<span class="temp-pair temp-low">
+										<span v-show="unit == 'fahr'">{{currentData.lowTemp.f}}</span>
+										<span v-show="unit == 'cels'">{{currentData.lowTemp.c}}</span>
+									</span>
+									/
+									<span class="temp-pair temp-low">
+										<span v-show="unit == 'fahr'">{{currentData.highTemp.f}}</span>
+										<span v-show="unit == 'cels'">{{currentData.highTemp.c}}</span>
+									</span>
+								</div>
+								</div>
+							<div><span>Humidity</span><span class="humid-num">{{currentData.main.humidity}}</span></div>
+							<div><span>Atm. Pressure</span><span class="press-num">{{currentData.main.pressure}}</span></div>
+							<div>
+								<span>Wind</span>
+								<span class="wind-num">
+									<span v-show="unit == 'fahr'">{{currentData.wind.mph}}</span>
+									<span v-show="unit == 'cels'">{{currentData.wind.speed}} </span>
+								</span>
+								<span class="wind-arr"><span class="wind-deg" :style="currentData.wind.degStyle"></span></span></div>
+							<div><span>Sunrise</span><span class="sunrise-num">{{currentData.sunrise}}</span></div>
+							<div><span>Sunset</span><span class="sunset-num">{{currentData.sunset}}</span></div>
+						</div>
 					</div>
+
 				</div>
-
-				<div id="details_toggle" class="collapsed" data-toggle="collapse" data-target="#current_details" aria-expanded="false" aria-controls="collapseExample" style="margin: 0 auto;">					</div>
-
-				<div class="collapse" id="current_details">
-					<div id="details_table" class="flex-container">
-						<div>
-							<span>Low/High</span>
+		
+				<div id="forecast" class="widget">
+					<h4>Forecast</h4>
+					<div id="hours_container">
+						<div v-for="hour in hourlyInfo" class="forecast-hour">
+							<div><span class="day">{{hour.day}}</span><span class="Hour">{{hour.time}}</span></div>
+							<div class="icon" v-html="hour.iconHTML"></div>
 							<div @click="toggleUnits" title="Change Units">
 								<span class="temp-pair temp-low">
-									<span v-show="unit == 'fahr'">{{currentData.lowTemp.f}}</span>
-									<span v-show="unit == 'cels'">{{currentData.lowTemp.c}}</span>
+									<span v-show="unit == 'fahr'">{{hour.lowTemp.f}}</span>
+									<span v-show="unit == 'cels'">{{hour.lowTemp.c}}</span>
 								</span>
-								/
+								&nbsp;/&nbsp;
 								<span class="temp-pair temp-low">
-									<span v-show="unit == 'fahr'">{{currentData.highTemp.f}}</span>
-									<span v-show="unit == 'cels'">{{currentData.highTemp.c}}</span>
+									<span v-show="unit == 'fahr'">{{hour.highTemp.f}}</span>
+									<span v-show="unit == 'cels'">{{hour.highTemp.c}}</span>
 								</span>
 							</div>
-							</div>
-						<div><span>Humidity</span><span class="humid-num">{{currentData.main.humidity}}</span></div>
-						<div><span>Atm. Pressure</span><span class="press-num">{{currentData.main.pressure}}</span></div>
-						<div>
-							<span>Wind</span>
-							<span class="wind-num">
-								<span v-show="unit == 'fahr'">{{currentData.wind.mph}}</span>
-								<span v-show="unit == 'cels'">{{currentData.wind.speed}} </span>
-							</span>
-							<span class="wind-arr"><span class="wind-deg" :style="currentData.wind.degStyle"></span></span></div>
-						<div><span>Sunrise</span><span class="sunrise-num">{{currentData.sunrise}}</span></div>
-						<div><span>Sunset</span><span class="sunset-num">{{currentData.sunset}}</span></div>
-					</div>
-				</div>
-
-			</div>
-	
-			<div id="forecast" class="widget">
-				<h4>Forecast</h4>
-				<div id="hours_container">
-					<div v-for="hour in hourlyInfo" class="forecast-hour">
-						<div><span class="day">{{hour.day}}</span><span class="Hour">{{hour.time}}</span></div>
-						<div class="icon" v-html="hour.iconHTML"></div>
-						<div @click="toggleUnits" title="Change Units">
-							<span class="temp-pair temp-low">
-								<span v-show="unit == 'fahr'">{{hour.lowTemp.f}}</span>
-								<span v-show="unit == 'cels'">{{hour.lowTemp.c}}</span>
-							</span>
-							&nbsp;/&nbsp;
-							<span class="temp-pair temp-low">
-								<span v-show="unit == 'fahr'">{{hour.highTemp.f}}</span>
-								<span v-show="unit == 'cels'">{{hour.highTemp.c}}</span>
-							</span>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div id="previews" class="widget">
-				<h4>Worldwide</h4>
-				<table id="previews_container"><tbody>
-					<tr v-for="city in pre_data" class="city_preview" @click="getWeatherFor(city.name)">
-						<td class="icon" v-html="city.icons.HTML"></td>
-						<td class="city">{{city.name}}</td>
-						<td class="cur-for-time">{{city.time}}</td>
-						<td class="temp-pair" @click="toggleUnits" title="Change Units">
-								<span v-show="unit == 'fahr'">{{city.temp.f}}</span>
-								<span v-show="unit == 'cels'">{{city.temp.c}}</span></td>
-						<td class="humid-num">💧 {{city.main.humidity}}</td>
-					</tr>
-				</tbody></table>
+				<div id="previews" class="widget">
+					<h4>Worldwide</h4>
+					<table id="previews_container"><tbody>
+						<tr v-for="city in pre_data" class="city_preview" @click="getWeatherFor(city.name)">
+							<td class="icon" v-html="city.icons.HTML"></td>
+							<td class="city">{{city.name}}</td>
+							<td class="cur-for-time">{{city.time}}</td>
+							<td class="temp-pair" @click="toggleUnits" title="Change Units">
+									<span v-show="unit == 'fahr'">{{city.temp.f}}</span>
+									<span v-show="unit == 'cels'">{{city.temp.c}}</span></td>
+							<td class="humid-num">💧 {{city.main.humidity}}</td>
+						</tr>
+					</tbody></table>
+				</div>
+		
 			</div>
-	<p></p>
-	<p></p>
-	<p></p>
-	<p></p>
-	<p></p>
-	<p></p>
 		</div>
 	</div>
+
+	<footer>See the repo on <a href="https://github.com/amj311/cool_weather">Github</a></footer>
 </div>
-
-<footer>See the repo on <a href="https://github.com/amj311/cool_weather">Github</a></footer>
-
 
 
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.js"></script>
