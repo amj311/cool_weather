@@ -83,6 +83,9 @@ footer {
     background-color: #00000022;
     text-align: center;
     padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 a {
