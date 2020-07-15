@@ -47,11 +47,11 @@
 
 	<div id="inner_body" class="max-width padded-sides padded-topbottom">
 		<div id="dash" class="flex-container">
-				<p>
+				<div>
 					<i>Showing weather for:</i>
 					&nbsp;<b><span class="fill city-name" v-if="currentData.sys">{{currentData.name}}, {{currentData.sys.country}}</span></b>
 					<!-- &nbsp;(<span class="fill" v-if="currentData.coord">{{currentData.coord.lat}}, {{currentData.coord.lon}})</span> -->
-				</p>
+				</div>
 
 				<div v-if="currentData.time" id="current_weather" class="widget">
 					
