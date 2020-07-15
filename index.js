@@ -163,7 +163,7 @@ var app = new Vue ({
             appData.data = weather;
             this.currentData = weather;
 
-            renderPreviews();
+            // renderPreviews();
         },
 
 
@@ -337,3 +337,4 @@ $('input[name="units"]').on('change', function() {
 })
 
 
+renderPreviews();
