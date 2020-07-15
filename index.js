@@ -104,8 +104,8 @@ var app = new Vue ({
             }
         },
 
-        formatKTemp(ktemp) {
-            return this.unit == this.UNIT_C ? Math.floor(k - 273.15) : Math.floor(obj.c * 1.8 + 32);
+        formatKTemp(k) {
+            return this.unit == this.UNIT_C ? Math.floor(k - 273.15) : Math.floor((k - 273.15) * 1.8 + 32);
         },
 
         toggleUnits(){
@@ -150,15 +150,12 @@ var app = new Vue ({
         
             weather.icons = getIconsFor(condDesc, appData.dayCycle);
         
-            document.title = `${weather.icons.main} ${tempCFPair(weather.main.temp)}° - ${condDesc}`;
+            document.title = `${weather.icons.main} ${this.formatKTemp(weather.main.temp)+this.tempUnit} - ${condDesc.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))}`;
         
             weather.time = dateToHourMin( forTime )
             weather.sunrise = dateToHourMin( forSunrise )
             weather.sunset = dateToHourMin( forSunset )
         
-            weather.temp = tempCFPair(weather.main.temp)
-            weather.lowTemp = tempCFPair(weather.main.temp_min)
-            weather.highTemp = tempCFPair(weather.main.temp_max)
             
             weather.wind.mph = windToMPH(weather.wind.speed)
             weather.wind.degStyle = `transform: rotate(${ weather.wind.deg }deg)`
@@ -183,6 +180,10 @@ var app = new Vue ({
     },
 
     computed: {
+        tempUnit() {
+            return this.unit == this.UNIT_C ? "℃" : "℉";
+        },
+
         async citiesData() {
             return this.pre_cities;
         },
@@ -206,8 +207,7 @@ var app = new Vue ({
                 else  dayCycle = "night";
                 obj.iconHTML = getIconsFor(descr, dayCycle).HTML;
             
-                obj.highTemp = tempCFPair(hour.main.temp_max);
-                obj.lowTemp = tempCFPair(hour.main.temp_min);
+                obj.main = hour.main;
 
                 obj.summary = hour.weather[0].main;
 
@@ -248,7 +248,6 @@ function calculatePreviewData(city){
 
     city.time = dateToHourMin(forTime)
     city.icons = getIconsFor(descr, dayCycle);
-    city.temp = tempCFPair(city.main.temp)    
     app.pre_data.push(city)
 }
 
@@ -281,16 +280,6 @@ function getIconsFor(cond, dayCycle){
     return { "main" : condIcon, "HTML" : iconHTML, }
 }
 
-
-
-
-
-function tempCFPair(k) {
-    let obj = {};
-    obj.c = Math.floor(k - 273.15);
-    obj.f = Math.floor(obj.c * 1.8 + 32);
-    return obj;
-}
 
 function windToMPH(s) {
     return (s * 2.237).toFixed(2)

@@ -33,7 +33,7 @@
 							<label for="units" class="btn btn-primary">Units: </label>
 					</div>
 					<div class="form-inline my-2 my-lg-0">
-						<input class="form-control mr-sm-2" type="search" name="city" id="city" placeholder='Ex: "Los Angeles, US" or "84601"' aria-label="City">
+						<input class="form-control mr-sm-2" type="search" name="city" id="city" placeholder='Search city or postal code' aria-label="City">
 						<button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="app.getWeatherFor(document.getElementById('city').value)">Get Weather</button>
 						<button class="btn btn-outline-light my-2 my-sm-0" type="submit" onclick="app.getLocalWeather()"><i class="fa fa-map-marker"></i></button>
 					</div>
@@ -65,8 +65,7 @@
 						</div>
 			
 						<div id="cur_temp" class="flex-container temp-pair" title="Change Units" onclick="app.toggleUnits()" title="Change Units">
-							<span v-show="unit == 'fahr'">{{currentData.temp.f}}</span>
-							<span v-show="unit == 'cels'">{{currentData.temp.c}}</span>
+							<span>{{formatKTemp(currentData.main.temp)}}</span>
 						</div>
 					</div>
 
@@ -78,13 +77,11 @@
 								<span>Low/High</span>
 								<div @click="toggleUnits" title="Change Units">
 									<span class="temp-pair temp-low">
-										<span v-show="unit == 'fahr'">{{currentData.lowTemp.f}}</span>
-										<span v-show="unit == 'cels'">{{currentData.lowTemp.c}}</span>
+										<span>{{formatKTemp(currentData.main.temp_min)}}</span>
 									</span>
 									/
-									<span class="temp-pair temp-low">
-										<span v-show="unit == 'fahr'">{{currentData.highTemp.f}}</span>
-										<span v-show="unit == 'cels'">{{currentData.highTemp.c}}</span>
+									<span class="temp-pair temp-high">
+										<span>{{formatKTemp(currentData.main.temp_max)}}</span>
 									</span>
 								</div>
 								</div>
@@ -112,13 +109,11 @@
 							<div class="icon" v-html="hour.iconHTML"></div>
 							<div @click="toggleUnits" title="Change Units">
 								<span class="temp-pair temp-low">
-									<span v-show="unit == 'fahr'">{{hour.lowTemp.f}}</span>
-									<span v-show="unit == 'cels'">{{hour.lowTemp.c}}</span>
+									<span>{{formatKTemp(hour.main.temp_min)}}</span>
 								</span>
 								&nbsp;/&nbsp;
 								<span class="temp-pair temp-low">
-									<span v-show="unit == 'fahr'">{{hour.highTemp.f}}</span>
-									<span v-show="unit == 'cels'">{{hour.highTemp.c}}</span>
+									<span>{{formatKTemp(hour.main.temp_max)}}</span>
 								</span>
 							</div>
 						</div>
@@ -133,8 +128,8 @@
 							<td class="city">{{city.name}}</td>
 							<td class="cur-for-time">{{city.time}}</td>
 							<td class="temp-pair" @click="toggleUnits" title="Change Units">
-									<span v-show="unit == 'fahr'">{{city.temp.f}}</span>
-									<span v-show="unit == 'cels'">{{city.temp.c}}</span></td>
+								<span>{{formatKTemp(city.main.temp_min)}}</span>
+							</td>
 							<td class="humid-num">💧 {{city.main.humidity}}</td>
 						</tr>
 					</tbody></table>
