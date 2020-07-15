@@ -27,21 +27,21 @@ body {
 body[data-day-cycle="day"] {
     background-image: linear-gradient(-35deg, var(--day-blue-op), 50%, var(--day-highlight)), url(./images/day_sky.jpg);
 }
-body[data-day-cycle="day"] .navbar {
+body[data-day-cycle="day"] #navWrapper {
     background-color:  var(--day-blue-op) !important;
 }
 
 body[data-day-cycle="night"] {
     background-image: linear-gradient(-35deg, var(--night-blue-op), 50%, var(--night-highlight)), url(./images/night_sky.jpg);
 }
-body[data-day-cycle="night"] .navbar {
+body[data-day-cycle="night"] #navWrapper {
     background-color: var(--night-blue) !important;
 }
 
 body[data-weather-cycle="rain"] {
     background-image: linear-gradient(-35deg, var(--rain-blue-op), 70%, var(--rain-highlight)), url(./images/rain_window.gif);
 }
-body[data-weather-cycle="rain"] .navbar {
+body[data-weather-cycle="rain"] #navWrapper {
     background-color: var(--rain-blue-op) !important;
 }
 
@@ -50,7 +50,9 @@ div#app {
     flex-direction: column;
     height: 100vh;
 }
-
+.navbar {
+    background-color: transparent !important;
+}
 div#inner_body {
     max-height: calc(100vh - 7.8em);
     overflow-y: auto;
