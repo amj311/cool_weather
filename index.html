@@ -17,9 +17,14 @@
 	<link rel="stylesheet" href="index.css">
 </head>
 
-<body data-day-cycle="day" data-unit="fahr" data-weather-cycle="rain">
-	<div id="app">
-		<div id="navWrapper">
+<body data-day-cycle="day" data-unit="fahr">
+	<div id="app" :class="displayCondition">
+		<div id="video-bg-wrapper">
+			<video :src="`./assets/bg_${displayCondition}.mp4`" type="video/mp4" autoplay loop></video>
+			<div id="videoOverlay" :style="{'background-image': `linear-gradient(-35deg, var(--${displayCondition}-hue-op), 10%,  var(--${displayCondition}-hue-op), 60%, var(--${displayCondition}-hue)), url(./images/${displayCondition}_sky.jpg)`}"></div>
+		</div>
+
+		<div id="navWrapper" :style="{'background-color':  `var(--${displayCondition}-highlight) !important`}">
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark max-width">
 				<a class="navbar-brand" href="#">😎 Cool Weather</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -66,7 +71,7 @@
 					</div>
 		
 					<div id="cur_temp" class="flex-container temp-pair" title="Change Units" onclick="app.toggleUnits()" title="Change Units">
-						<span>{{formatKTemp(currentData.main.temp)}}</span>
+						<span>{{formatKTemp(currentData.main.feels_like)}}</span>
 					</div>
 				</div>
 
@@ -139,7 +144,7 @@
 		</div>
 	</div>
 
-	<footer>
+	<div id="footer">
 		<div id="footerContent" class="max-width">
 			<span>Made with 🔥 by Arthur Judd</span>
 			<span style="font-size: 1.2em;">
@@ -147,7 +152,7 @@
 				<a href="https://github.com/amj311/cool_weather"><i class='fa fa-github'></i></a>
 			</span>	
 		</div>
-	</footer>
+	</div>
 </div>
 
 

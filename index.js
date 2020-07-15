@@ -4,7 +4,7 @@ const THEMES = { day : "#3e96ee", night : "#1b4368", rain : "#4b6177" };
 var appData = {
     data : {},
     unit : 'fahr',
-    cond : "rain",
+    cond : "",
     icons : {
         "clear sky" : "☀",
         "few clouds" : "🌤",
@@ -51,7 +51,7 @@ var app = new Vue ({
     data: {
         openWeatherID: "48cd58f888a06eff3e989435bea46736",
         unit: 'fahr',
-        isDay: false,
+        dayCycle: "day",
         currentData: {},
         forecastHours: [],
         message: "hello",
@@ -133,22 +133,23 @@ var app = new Vue ({
             let forSunrise = getForeignTimeAt( dateFromSec(weather.sys.sunrise), weather.timezone );
             let forSunset = getForeignTimeAt( dateFromSec(weather.sys.sunset), weather.timezone );
         
-            if (forTime > forSunrise && forTime < forSunset) appData.dayCycle = "day";
-            else  appData.dayCycle = "night";
+            if (forTime > forSunrise && forTime < forSunset) app.dayCycle = "day";
+            else  app.dayCycle = "night";
         
-            document.querySelector('head > meta[name="theme-color"]').content = THEMES[appData.dayCycle];
+            document.querySelector('head > meta[name="theme-color"]').content = THEMES[app.dayCycle];
         
             let condDesc = weather.weather[0].description;
         
             if (appData.rain_cond.indexOf(condDesc) >= 0) {
                 document.body.setAttribute('data-weather-cycle',"rain")
+                this.cond = "rain";
                 document.querySelector('head > meta[name="theme-color"]').content = THEMES.rain;
             }
             else  document.body.removeAttribute('data-weather-cycle')
         
-            document.body.setAttribute('data-day-cycle',appData.dayCycle)
+            document.body.setAttribute('data-day-cycle',app.dayCycle)
         
-            weather.icons = getIconsFor(condDesc, appData.dayCycle);
+            weather.icons = getIconsFor(condDesc, app.dayCycle);
         
             document.title = `${weather.icons.main} ${this.formatKTemp(weather.main.temp)+this.tempUnit} - ${condDesc.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))}`;
         
@@ -184,7 +185,20 @@ var app = new Vue ({
             return this.unit == this.UNIT_C ? "℃" : "℉";
         },
 
-        async citiesData() {
+        displayCondition() {
+            if (!this.currentData.weather) return "";
+            let weatherID = Number(this.currentData.weather[0].id);
+            weatherID = 200;
+            if (weatherID >= 200 && weatherID < 300 ) return "storm"
+            if (weatherID >= 300 && weatherID < 600 ) return "rain"
+            if (weatherID == 602 || weatherID == 622 ) return "blizzard"
+            if (weatherID >= 600 && weatherID < 700 ) return "snow"
+            if (weatherID >= 700 && weatherID < 800 ) return "atmos"
+            if (weatherID >= 804 ) return "overcast"
+            return this.dayCycle;
+        },
+
+        citiesData() {
             return this.pre_cities;
         },
 
