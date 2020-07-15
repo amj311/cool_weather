@@ -188,7 +188,7 @@ var app = new Vue ({
         displayCondition() {
             if (!this.currentData.weather) return "";
             let weatherID = Number(this.currentData.weather[0].id);
-            weatherID = 200;
+            // weatherID = 600;
             if (weatherID >= 200 && weatherID < 300 ) return "storm"
             if (weatherID >= 300 && weatherID < 600 ) return "rain"
             if (weatherID == 602 || weatherID == 622 ) return "blizzard"
