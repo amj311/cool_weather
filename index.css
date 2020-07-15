@@ -60,6 +60,7 @@ div#inner_body {
 .max-width {
     margin: 0 auto;
     max-width: 800px;
+    width: 100%;
 }
 
 .padded-sides {
@@ -78,11 +79,13 @@ div#inner_body {
 }
 
 footer {
-    flex-grow: 1;
     width:100%;
     background-color: #00000022;
     text-align: center;
     padding: 15px;
+}
+#footerContent {
+    flex-grow: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
