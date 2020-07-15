@@ -48,6 +48,7 @@ body[data-weather-cycle="rain"] #navWrapper {
 div#app {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     height: 100vh;
 }
 .navbar {
